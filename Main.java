@@ -19,8 +19,8 @@ public class Main{
                 index ++;
                 if(index >= dataArray.length){
                     index = 0;
-                    // dataArray = Arrays.copyOf(dataArray,index + dataArray.length);
-                    System.out.println(new String(dataArray));    
+                    // System.out.println(new String(dataArray));
+
                 }
                 data = ins.read();      
             }
