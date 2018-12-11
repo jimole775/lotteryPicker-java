@@ -1,11 +1,20 @@
-import java.io.InputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.util.Arrays;
-public class Main{
+import lotteryPickerJava.analyze.AwardRate;
+import lotteryPickerJava.utils.FileReader;
+
+class CallbackIml implements Callback {
+    public void callbackRegister() {
+
+    }
+
+    public void callbackFn() {
+        System.out.println("is run success");
+    }
+}
+
+public class Main {
+
     public static void main(String[] args) {
+<<<<<<< HEAD
         File direction = new File("");
         String filePath = direction.getAbsolutePath() + File.separator + "db/base/amount.txt";
         try {
@@ -31,5 +40,15 @@ public class Main{
             System.out.println(e);
             //TODO: handle exception
         }
+=======
+        FileReader fr = new FileReader("db/base/amount.txt");
+        fr.callbackRegister(new CallbackIml());
+        fr.read();
     }
+
+    public void cbHandle(byte[] data) {
+        System.out.println(data);
+>>>>>>> 58c4d5013d7040b0186082ae8371be5c98fa9ba6
+    }
+
 }
