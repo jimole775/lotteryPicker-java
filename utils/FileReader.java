@@ -10,7 +10,6 @@ public class FileReader {
 
     File direction = new File("");
     String filePath = direction.getAbsolutePath() + File.separator;
-    Callback callback;
 
     public FileReader(String path) {
 
@@ -21,12 +20,8 @@ public class FileReader {
     // return readHandle();
     // }
 
-    public void callbackRegister(Callback thatCallbackFn) {
-        callback = thatCallbackFn;
-    }
-
-    public void read() {
-        callback();
+    public void read(Callback callback) {
+        callback.callbackFn();
     }
 
     public void pipe(Object CallbackTarget) {
