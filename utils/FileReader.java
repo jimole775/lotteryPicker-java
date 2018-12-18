@@ -3,10 +3,15 @@ package lotteryPickerJava.utils;
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.File;
 import java.util.Arrays;
 
-public class FileReader implements Callback{
+public interface Callback{
+    public void entries(byte[] data);
+}
+
+public class FileReader{
 
     File direction = new File("");
     String filePath = direction.getAbsolutePath() + File.separator;
@@ -15,17 +20,20 @@ public class FileReader implements Callback{
 
         filePath += path;
     }
-    // public byte[] read() {
-    // return readHandle();
-    // }
-    public void read(Callback callback) {
-        System.out.println(callback);
+
+    public byte[] read() {
+        return readHandle();
     }
 
-    private byte[] readHandle() {
-
+    public void read(Callback cb) {
+        byte[] data = readHandle();
+        cb.entries(data);
+    }
+    
+    private byte[] readHandle(){
+        byte[] wholeData = new byte[512];
+        try {            
         InputStream ins = new FileInputStream(filePath);
-        byte wholeData[] = new byte[1024];
         int data = ins.read();
         int byteIndex = 0;
         while (data != -1) {
@@ -37,7 +45,9 @@ public class FileReader implements Callback{
             data = ins.read();
         }
         ins.close();
-
+        } catch (Exception e) {
+            System.err.println(e);
+        }    
         return wholeData;
     }
 }

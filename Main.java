@@ -4,16 +4,21 @@ import lotteryPickerJava.utils.Callback;
 
 public class Main {
     public static void main(String[] args) {
+        readFile();
+    }
+
+    private static void readFile(){
         FileReader fr = new FileReader("db/base/amount.txt");
-        fr.read(new CallBack(){
-            public void init(){
+        fr.read(new Callback(){
+            public void entries(byte[] data){
                 System.out.println("is run success");
+                callbackHandler(data);
             }
         });
     }
 
-    public void cbHandle(byte[] data) {
-        System.out.println(data);
+    private static void callbackHandler(byte[] data) {
+        System.out.println(new String(data));
     }
 
 }
