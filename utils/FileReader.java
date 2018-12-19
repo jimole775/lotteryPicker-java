@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.File;
 import java.util.Arrays;
 
-public class FileReader {
+public class FileReader implements CallbackEmitter {
 
     File direction = new File("");
     String filePath = direction.getAbsolutePath() + File.separator;
@@ -21,11 +21,13 @@ public class FileReader {
     // }
 
     public void read(Callback callback) {
-        callback.callbackFn();
+        // System.out.println(callback);
+        runCallback(callback);
     }
 
-    public void pipe(Object CallbackTarget) {
-
+    @Override
+    public void runCallback(Callback callback) {
+        callback.entries();
     }
 
     private byte[] readHandle() {

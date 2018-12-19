@@ -1,3 +1,5 @@
-public interface CallBack {
-    public void callbackFn();
+// package utils;
+
+public interface Callback {
+    public void entries(CallbackEmitter e);
 }
