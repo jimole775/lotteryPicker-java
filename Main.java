@@ -5,13 +5,21 @@ import lotteryPickerJava.analyze.AwardRate;
 
 public class Main {
     public static void main(String[] args) {
+        readFile();
+    }
+
+    private static void readFile(){
         FileReader fr = new FileReader("db/base/amount.txt");
-        fr.read(new Callback() {
-            @Override
-            public void entries() {
+        fr.read(new Callback(){
+            public void entries(byte[] data){
                 System.out.println("is run success");
+                callbackHandler(data);
             }
         });
+    }
+
+    private static void callbackHandler(byte[] data) {
+        System.out.println(new String(data));
     }
 
 }
