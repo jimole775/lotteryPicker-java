@@ -14,10 +14,10 @@ public interface Callback{
 public class FileReader{
 
     File direction = new File("");
-    String filePath = direction.getAbsolutePath() + File.separator;
+    String filePath = direction.getAbsolutePath() + File.separator; 
+    public ArrayList<Callback> callbackRegisted = new ArrayList(); 
 
     public FileReader(String path) {
-
         filePath += path;
     }
 
@@ -28,6 +28,17 @@ public class FileReader{
     public void read(Callback cb) {
         byte[] data = readHandle();
         cb.entries(data);
+    }
+
+    public FileReader pipe(Callback pipeCb){
+        byte[] data = readHandle();
+        pipeCb.entries(data);
+        callbackRegisted.push(pipeCb);
+        return this;
+    }
+
+    public byte[] readLine(){
+        
     }
     
     private byte[] readHandle(){
