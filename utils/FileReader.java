@@ -6,16 +6,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.File;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 public interface Callback{
     public void entries(byte[] data);
 }
 
-public class FileReader{
+public abstract class Stream{
+    public void pipeInterface(ArrayList<Callback> cbRegisted){
+
+    };
+}
+
+public class FileReader extends Stream{
 
     File direction = new File("");
     String filePath = direction.getAbsolutePath() + File.separator; 
-    public ArrayList<Callback> callbackRegisted = new ArrayList(); 
 
     public FileReader(String path) {
         filePath += path;
@@ -25,23 +31,42 @@ public class FileReader{
         return readHandle();
     }
 
-    public void read(Callback cb) {
-        byte[] data = readHandle();
+    public FileReader read(Callback cb) {
+        byte[] data = readByteHandle();
         cb.entries(data);
+        return this;
     }
 
+    public FileReader readLine(Callback cb){
+        byte[] data = readLineHandle();
+        cb.entries(data);
+        return this;
+    }
+
+    
+    public ArrayList<Callback> callbackRegisted = new ArrayList<Callback>(); 
+    // pipe需要存储所有回调，每读取一字节，就循环调用所有回调
     public FileReader pipe(Callback pipeCb){
         byte[] data = readHandle();
-        pipeCb.entries(data);
         callbackRegisted.push(pipeCb);
         return this;
     }
 
-    public byte[] readLine(){
-        
+    @Override
+    public void pipeInterface(ArrayList<Callback> cbRegisted) {
+        // 从下标0开始执行回调函数
+    }
+
+    public void end(Callback pipeEndCb){
+        // callbackRegisted;
+        pipeInterface(callbackRegisted);
+    };
+
+    private byte[] readLineHandle(){
+        return new Byte();
     }
     
-    private byte[] readHandle(){
+    private byte[] readByteHandle(){
         byte[] wholeData = new byte[512];
         try {            
         InputStream ins = new FileInputStream(filePath);
