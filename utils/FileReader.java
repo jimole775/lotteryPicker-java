@@ -8,23 +8,15 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.ArrayList;
 
-public interface Callback{
-    public void entries(byte[] data);
-}
+public class FileReader implements Pipe{
+    InputStream ins;
+    int insByteIndex = 0; 
+    ArrayList<Callback> pipeCbRegisted = new ArrayList<Callback>(); 
 
-public abstract class Stream{
-    public void pipeInterface(ArrayList<Callback> cbRegisted){
-
-    };
-}
-
-public class FileReader extends Stream{
-
-    File direction = new File("");
-    String filePath = direction.getAbsolutePath() + File.separator; 
-
-    public FileReader(String path) {
-        filePath += path;
+    public FileReader(String path) {    
+        File direction = new File("");
+        String filePath = direction.getAbsolutePath() + File.separator;        
+        ins = new FileInputStream(filePath += path);
     }
 
     public byte[] read() {
@@ -43,47 +35,60 @@ public class FileReader extends Stream{
         return this;
     }
 
-    
-    public ArrayList<Callback> callbackRegisted = new ArrayList<Callback>(); 
     // pipe需要存储所有回调，每读取一字节，就循环调用所有回调
+    @Override
     public FileReader pipe(Callback pipeCb){
-        byte[] data = readHandle();
-        callbackRegisted.push(pipeCb);
+        pipeCbRegisted.add(pipeCb);
         return this;
     }
 
+    // end算是pipe触发器
     @Override
-    public void pipeInterface(ArrayList<Callback> cbRegisted) {
-        // 从下标0开始执行回调函数
-    }
-
     public void end(Callback pipeEndCb){
-        // callbackRegisted;
-        pipeInterface(callbackRegisted);
+        emit();
+        pipeEndCb.entries((byte)-1);
     };
 
-    private byte[] readLineHandle(){
-        return new Byte();
-    }
-    
-    private byte[] readByteHandle(){
-        byte[] wholeData = new byte[512];
-        try {            
-        InputStream ins = new FileInputStream(filePath);
-        int data = ins.read();
-        int byteIndex = 0;
-        while (data != -1) {
-            wholeData[byteIndex] = (byte) data;
-            byteIndex++;
-            if (byteIndex >= wholeData.length) {
-                wholeData = Arrays.copyOf(wholeData, byteIndex * 2);
-            }
-            data = ins.read();
+    @Override
+    public void emit(){        
+        int data = readByte();
+        // 文件读完了，回调最后的方法
+        if(data == -1){ 
+            return;       
         }
-        ins.close();
+
+        int cbLen = pipeCbRegisted.size();
+        for (Callback pipeCb : pipeCbRegisted) {    
+
+            pipeCb.entries((byte)data);
+
+            // pipe组跑完了，来个递归
+            if(cbLen == 0){
+                emit();
+                break;
+            }
+
+            cbLen--;
+        }
+
+    }
+
+    // private byte[] readLineHandle(){
+    //     byte[] line = new byte[10];
+    //     insByteIndex ++;
+    //     return new Byte();
+    // }
+    
+    private int readByte(){
+        int data = null;
+        try {            
+            data = ins.read();
+            if(data == -1){
+                ins.close();
+            } 
         } catch (Exception e) {
             System.err.println(e);
-        }    
-        return wholeData;
+        }           
+        return data; 
     }
 }
