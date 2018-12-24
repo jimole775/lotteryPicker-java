@@ -1,4 +1,4 @@
-package lotteryPickerJava.utils;
+package utils;
 
 import java.io.InputStream;
 import java.io.FileInputStream;
@@ -9,17 +9,21 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 public class FileReader implements Pipe{
-    InputStream ins;
-    int insByteIndex = 0; 
-    ArrayList<Callback> pipeCbRegisted = new ArrayList<Callback>(); 
+    private InputStream ins;
+    int insByteIndex = 0;
+    private ArrayList<Callback> pipeCbRegister = new ArrayList<Callback>();
 
     public FileReader(String path) {    
         File direction = new File("");
-        String filePath = direction.getAbsolutePath() + File.separator;        
-        ins = new FileInputStream(filePath += path);
+        String filePath = direction.getAbsolutePath() + File.separator;
+        try {
+            ins = new FileInputStream(filePath += path);
+        } catch (IOException e){
+            System.out.println(e.getMessage());
+        }
     }
 
-    public byte[] read() {
+  /*  public byte[] read() {
         return readHandle();
     }
 
@@ -33,12 +37,12 @@ public class FileReader implements Pipe{
         byte[] data = readLineHandle();
         cb.entries(data);
         return this;
-    }
+    }*/
 
     // pipe需要存储所有回调，每读取一字节，就循环调用所有回调
     @Override
     public FileReader pipe(Callback pipeCb){
-        pipeCbRegisted.add(pipeCb);
+        pipeCbRegister.add(pipeCb);
         return this;
     }
 
@@ -57,18 +61,20 @@ public class FileReader implements Pipe{
             return;       
         }
 
-        int cbLen = pipeCbRegisted.size();
-        for (Callback pipeCb : pipeCbRegisted) {    
+        int cbLen = pipeCbRegister.size();
+        for (Callback pipeCb : pipeCbRegister) {
 
+            insByteIndex ++;
+            System.out.println(insByteIndex);
             pipeCb.entries((byte)data);
 
+            cbLen--;
             // pipe组跑完了，来个递归
             if(cbLen == 0){
                 emit();
                 break;
             }
 
-            cbLen--;
         }
 
     }
@@ -80,15 +86,15 @@ public class FileReader implements Pipe{
     // }
     
     private int readByte(){
-        int data = null;
-        try {            
+        int data = -1;
+        try {
             data = ins.read();
             if(data == -1){
                 ins.close();
-            } 
-        } catch (Exception e) {
-            System.err.println(e);
-        }           
+            }
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
         return data; 
     }
 }

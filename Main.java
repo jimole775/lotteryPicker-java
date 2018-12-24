@@ -1,6 +1,6 @@
-import lotteryPickerJava.analyze.AwardRate;
-import lotteryPickerJava.utils.FileReader;
-import lotteryPickerJava.utils.Callback;
+//import analyze.AwardRate;
+import utils.FileReader;
+import utils.Callback;
 // import lotteryPickerJava.utils.CallbackEmitter;
 
 public class Main {
@@ -21,9 +21,4 @@ public class Main {
             }
         });
     }
-
-    // private static void callbackHandler(byte[] data) {
-    //     System.out.println(new String(data));
-    // }
-
 }
