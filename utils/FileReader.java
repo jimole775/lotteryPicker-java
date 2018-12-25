@@ -10,14 +10,14 @@ import java.util.ArrayList;
 
 public class FileReader implements Pipe{
     private InputStream ins;
-    int insByteIndex = 0;
+    private int insByteIndex = 0;
     private ArrayList<Callback> pipeCbRegister = new ArrayList<Callback>();
-
+    private String osName = System.getProperties().getProperty("os.name");
     public FileReader(String path) {    
         File direction = new File("");
-        String filePath = direction.getAbsolutePath() + File.separator;
+        String filePath = direction.getAbsolutePath() + File.separator + path;
         try {
-            ins = new FileInputStream(filePath += path);
+            ins = new FileInputStream(filePath);
         } catch (IOException e){
             System.out.println(e.getMessage());
         }
@@ -51,11 +51,12 @@ public class FileReader implements Pipe{
     public void end(Callback pipeEndCb){
         emit();
         pipeEndCb.entries((byte)-1);
-    };
+    }
 
     @Override
     public void emit(){        
         int data = readByte();
+
         // 文件读完了，回调最后的方法
         if(data == -1){ 
             return;       
@@ -64,8 +65,6 @@ public class FileReader implements Pipe{
         int cbLen = pipeCbRegister.size();
         for (Callback pipeCb : pipeCbRegister) {
 
-            insByteIndex ++;
-            System.out.println(insByteIndex);
             pipeCb.entries((byte)data);
 
             cbLen--;
@@ -74,27 +73,50 @@ public class FileReader implements Pipe{
                 emit();
                 break;
             }
-
         }
-
     }
 
-    // private byte[] readLineHandle(){
-    //     byte[] line = new byte[10];
-    //     insByteIndex ++;
-    //     return new Byte();
-    // }
-    
-    private int readByte(){
+    public byte[] readLine(){
+        int loopIndex = 0;
+        int lineLength = 10;
+        byte[] aline = new byte[lineLength];
+        boolean breakSign = true;
+        while(breakSign){
+            byte data = readByte();
+
+            // 如果超出了原数组尺寸，重新调整长度
+            if(loopIndex == lineLength){
+                lineLength = lineLength*3/2 + 1;
+                aline = Arrays.copyOf(aline,lineLength);
+            }
+
+            // 赋值
+            aline[loopIndex ++] = data;
+
+            // 如果遇到换行符，就结束循环
+            if(isWindows() && data == 0x0A || !isWindows() && (data == 0x0D || data == 0x0A)){
+                loopIndex = 0;
+                breakSign = false;
+            }
+        }
+        return aline;
+    }
+
+    private byte readByte(){
         int data = -1;
         try {
             data = ins.read();
+            insByteIndex ++;
             if(data == -1){
                 ins.close();
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        return data; 
+        return (byte)data;
+    }
+
+    private boolean isWindows(){
+        return osName.contains("Windows");
     }
 }

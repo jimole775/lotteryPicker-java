@@ -10,15 +10,16 @@ public class Main {
 
     private static void readFile(){
         FileReader fr = new FileReader("db/base/amount.txt");
-        fr.pipe(new Callback(){
+        /*fr.pipe(new Callback(){
             public void entries(byte data){
                 System.out.println("is run success " + data);
-                // callbackHandler(data);
             }
         }).end(new Callback(){
             public void entries(byte data){
                 System.out.println("is run end " + data);
             }
-        });
+        });*/
+        byte[] line = fr.readLine();
+        System.out.println(new String(line));
     }
 }
