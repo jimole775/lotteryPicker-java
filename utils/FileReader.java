@@ -1,5 +1,7 @@
 package utils;
-
+/**
+ * Created by Andy-Super on 2018/12/21.
+ */
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,7 +16,7 @@ public class FileReader implements Pipe{
     private int insByteIndex = 0;
     private ArrayList<Callback> pipeCbRegister = new ArrayList<Callback>();
     private String osName = System.getProperties().getProperty("os.name");
-    public FileReader(String path) {    
+    public FileReader(String path) {
         File direction = new File("");
         String filePath = direction.getAbsolutePath() + File.separator + path;
         try {
@@ -24,7 +26,7 @@ public class FileReader implements Pipe{
         }
     }
 
-  /*  public byte[] read() {
+  /*public byte[] read() {
         return readHandle();
     }
 
@@ -60,7 +62,7 @@ public class FileReader implements Pipe{
 
         // 文件读完了，回调最后的方法
         if(data == -1){ 
-            return;       
+            return;
         }
 
         int cbLen = pipeCbRegister.size();

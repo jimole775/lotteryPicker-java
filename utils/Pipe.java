@@ -1,4 +1,8 @@
 package utils;
+
+/**
+ * Created by Andy-Super on 2018/12/21.
+ */
 import java.util.ArrayList;
 public interface Pipe{
 

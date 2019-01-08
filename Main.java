@@ -1,3 +1,7 @@
+
+/**
+ * Created by Andy-Super on 2018/12/20.
+ */
 //import analyze.AwardRate;
 import utils.FileReader;
 import utils.Callback;
@@ -8,19 +12,19 @@ public class Main {
         readFiles();
     }
 
-    private static void readFiles(){
-        FileReader fr = new FileReader("db/base/behind_rate_foundation.json");
-        /*fr.pipe(new Callback(){
-            public void entries(byte data){
-                System.out.println("is run success " + data);
-            }
-        }).end(new Callback(){
-            public void entries(byte data){
-                System.out.println("is run end " + data);
-            }
-        });*/
-//        byte[] line = fr.readLine();
-        byte[] file = fr.readFile();
-        System.out.println(new String(file));
+    private static void readFile(){
+        FileReader fr = new FileReader("db/base/amount.txt");
+//        fr.pipe(new Callback(){
+//            public void entries(byte data){
+//                System.out.println("is run success " + data);
+//            }
+//        }).end(new Callback(){
+//            public void entries(byte data){
+//                System.out.println("is run end " + data);
+//            }
+//        });
+        byte[] line = fr.readLine();
+//        System.out.println(new String(line));
+
     }
 }

@@ -2,4 +2,5 @@
 .vscode
 .git
 node_modules
+/out
 
