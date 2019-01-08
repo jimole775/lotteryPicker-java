@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.File;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.lang.Object;
 
 public class FileReader implements Pipe{
     private InputStream ins;
@@ -80,9 +81,18 @@ public class FileReader implements Pipe{
         int loopIndex = 0;
         int lineLength = 10;
         byte[] aline = new byte[lineLength];
-        boolean breakSign = true;
-        while(breakSign){
+        boolean keepGoOn = true;
+        while(keepGoOn){
             byte data = readByte();
+
+            // 如果遇到换行符或者结果是-1，就结束循环
+            if(isWindows() && data == 0x0A // 区别各系统之间的换行符
+               || !isWindows() && (data == 0x0D || data == 0x0A)
+               || data == -1){
+                loopIndex = 0;
+                keepGoOn = false;
+                continue;
+            }
 
             // 如果超出了原数组尺寸，重新调整长度
             if(loopIndex == lineLength){
@@ -92,21 +102,29 @@ public class FileReader implements Pipe{
 
             // 赋值
             aline[loopIndex ++] = data;
-
-            // 如果遇到换行符，就结束循环
-            if(isWindows() && data == 0x0A || !isWindows() && (data == 0x0D || data == 0x0A)){
-                loopIndex = 0;
-                breakSign = false;
-            }
         }
         return aline;
+    }
+
+    public byte[] readFile(){
+        boolean keepGoOn = true;
+        byte[] result = new byte[0];
+        while(keepGoOn){
+            byte[] aline = readLine();
+            if(aline[0] == 0){
+                keepGoOn = false;
+            }
+//            result = ();
+            result = Arrays.copyOf(aline,result.length + aline.length);
+        }
+        return result;
     }
 
     private byte readByte(){
         int data = -1;
         try {
             data = ins.read();
-            insByteIndex ++;
+            this.insByteIndex ++;
             if(data == -1){
                 ins.close();
             }
@@ -118,5 +136,19 @@ public class FileReader implements Pipe{
 
     private boolean isWindows(){
         return osName.contains("Windows");
+    }
+
+    private char[] compatibleWrapString(){
+        char[] result;
+        if(isWindows()) {
+            result = new char[1];
+            result[0] = 0x0A;
+        }
+        else {
+            result = new char[2];
+            result[0] = 0x0D;
+            result[1] = 0x0A;
+        }
+        return result;
     }
 }

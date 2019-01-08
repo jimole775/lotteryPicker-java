@@ -5,11 +5,11 @@ import utils.Callback;
 
 public class Main {
     public static void main(String[] args) {
-        readFile();
+        readFiles();
     }
 
-    private static void readFile(){
-        FileReader fr = new FileReader("db/base/amount.txt");
+    private static void readFiles(){
+        FileReader fr = new FileReader("db/base/behind_rate_foundation.json");
         /*fr.pipe(new Callback(){
             public void entries(byte data){
                 System.out.println("is run success " + data);
@@ -19,7 +19,8 @@ public class Main {
                 System.out.println("is run end " + data);
             }
         });*/
-        byte[] line = fr.readLine();
-        System.out.println(new String(line));
+//        byte[] line = fr.readLine();
+        byte[] file = fr.readFile();
+        System.out.println(new String(file));
     }
 }
