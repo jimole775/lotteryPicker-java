@@ -4,16 +4,16 @@
  */
 //import analyze.AwardRate;
 import utils.FileReader;
-import utils.Callback;
+import product.CreateRateFoundation;
 // import lotteryPickerJava.utils.CallbackEmitter;
 
 public class Main {
     public static void main(String[] args) {
-        readFiles();
+        readFile();
     }
 
     private static void readFile(){
-        FileReader fr = new FileReader("db/base/amount.txt");
+//        FileReader fr = new FileReader("db/base/amount.txt");
 //        fr.pipe(new Callback(){
 //            public void entries(byte data){
 //                System.out.println("is run success " + data);
@@ -23,8 +23,10 @@ public class Main {
 //                System.out.println("is run end " + data);
 //            }
 //        });
-        byte[] line = fr.readLine();
+//        byte[] line = fr.readLine();
 //        System.out.println(new String(line));
-
+        CreateRateFoundation crf = new CreateRateFoundation();
+        System.out.println(crf.getJsonString());
     }
+
 }
